@@ -26,7 +26,7 @@ public class Env : MonoBehaviour
 
     void Start()
     {
-        foreach(var i in FindObjectsOfType<RecordPanelControl>()) i.record = Record.GenerateTestData();
+        // foreach(var i in FindObjectsOfType<RecordPanelControl>()) i.record = Record.GenerateTestData();
     }
 
     void Update()

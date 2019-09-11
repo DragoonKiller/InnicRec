@@ -26,6 +26,7 @@ static enum MouseWhellEventType
 static struct EventData
 {
     string key;
+    string category;
     EventType type;
     unsigned long long time;
     float x;
@@ -55,6 +56,7 @@ static void Out(EventData const& x)
     // json 格式传输一个对象.
     fprintf(f, "{");
     fprintf(f, "\"key\":\"%s\",", x.key.c_str());
+    fprintf(f, "\"category\":\"%s\",", x.category.c_str());
     fprintf(f, "\"time\":%llu,", x.time);
     fprintf(f, "\"type\":%d,", x.type);
     fprintf(f, "\"x\":%f,", x.x);
@@ -78,9 +80,9 @@ static void Store(EventData const& x)
     ReleaseMutex(mutex);
 }
 
-static void Store(string const& key, EventType type, float x = 0, float y = 0, float z = 0, float w = 0)
+static void Store(string const& key, string const& category, EventType type, float x = 0, float y = 0, float z = 0, float w = 0)
 {
-    Store(EventData{ key, type, GetDeltaTime(), x, y, z, w });
+    Store(EventData{ key, category, type, GetDeltaTime(), x, y, z, w });
 }
 
 static void Fetch()
@@ -112,15 +114,15 @@ static LRESULT OnMouseEvent(int nCode, WPARAM wParam, MOUSEHOOKSTRUCT* lParam)
         {
             auto x = lParam->pt.x;
             auto y = lParam->pt.y;
-            Store("MouseMove", EventNone, x, y, 0, 0);
+            Store("MouseMove", "Mouse", EventNone, x, y, 0, 0);
         }
-        else if (wParam == WM_MOUSEWHEEL) Store("MouseWhell", EventNone, lParam->pt.x == MouseScrollUp ? 1 : -1);
-        else if (wParam == WM_LBUTTONDOWN) Store("MouseLeft", EventDown);
-        else if (wParam == WM_LBUTTONUP) Store("MouseLeft", EventUp);
-        else if (wParam == WM_RBUTTONDOWN) Store("MouseRight", EventDown);
-        else if (wParam == WM_RBUTTONUP) Store("MouseRight", EventUp);
-        else if (wParam == WM_MBUTTONDOWN) Store("MouseMiddle", EventDown);
-        else if (wParam == WM_MBUTTONUP) Store("MouseMiddle", EventUp);
+        else if (wParam == WM_MOUSEWHEEL) Store("MouseWhell", "Mouse", EventNone, lParam->pt.x == MouseScrollUp ? 1 : -1);
+        else if (wParam == WM_LBUTTONDOWN) Store("MouseLeft", "Mouse", EventDown);
+        else if (wParam == WM_LBUTTONUP) Store("MouseLeft", "Mouse", EventUp);
+        else if (wParam == WM_RBUTTONDOWN) Store("MouseRight", "Mouse", EventDown);
+        else if (wParam == WM_RBUTTONUP) Store("MouseRight", "Mouse", EventUp);
+        else if (wParam == WM_MBUTTONDOWN) Store("MouseMiddle", "Mouse", EventDown);
+        else if (wParam == WM_MBUTTONUP) Store("MouseMiddle", "Mouse", EventUp);
     }
     return CallNextHookEx(hookHandle, nCode, (WPARAM)wParam, (LPARAM)lParam);
 }
@@ -138,7 +140,8 @@ static LRESULT OnKeyEvent(int nCode, WPARAM wParam, KeyboardHookStruct* lParam)
 {
     if (nCode >= 0)
     {
-        Store(VkToString(lParam->vkCode), wParam == WM_KEYDOWN ? EventDown : EventUp);
+        auto st = VkToString(lParam->vkCode);
+        Store(st.second, st.first, wParam == WM_KEYDOWN ? EventDown : EventUp);
     }
     return CallNextHookEx(hookHandle, nCode, (WPARAM)wParam, (LPARAM)lParam);
 }

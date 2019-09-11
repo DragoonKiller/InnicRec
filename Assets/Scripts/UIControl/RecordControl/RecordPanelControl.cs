@@ -212,6 +212,7 @@ public class RecordPanelControl : MonoBehaviour
 
             // 设置面板属性.
             c.keyName = keyName;
+            c.keyCategory = record.NameToCategory(keyName);
             c.gameObject.name = c.GetInstanceID() + " KeyLine " + keyName;
             var ct = c.GetComponent<RectTransform>();
             var size = ct.rect.size;

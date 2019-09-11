@@ -61,7 +61,7 @@ public class ColorManager : MonoBehaviour
     public Color baseMouseLineColor;
 
     [Tooltip("键盘上的按键对应的区间的标准颜色.")]
-    public Color baseKMouseIntervalColor;
+    public Color baseMouseIntervalColor;
 
     [Tooltip("键盘上的按键对应的点的标准颜色.")]
     public Color baseMousePointColor;
@@ -103,37 +103,26 @@ public class ColorManager : MonoBehaviour
         rand = new System.Random(seed);
     }
 
-    public Color GetPanelColor(string keyName, bool highlighted = false)
+    public Color GetPanelColor(string keyName, string category, bool highlighted = false)
+        => GetColor(keyName, category, baseMousePanelColor, baseKeyPanelColor, unknownKeyColor, highlighted);
+
+    public Color GetLineColor(string keyName, string category, bool highlighted = false)
+        => GetColor(keyName, category, baseMouseLineColor, baseKeyLineColor, unknownKeyColor, highlighted);
+
+    public Color GetIntervalColor(string keyName, string category, bool highlighted = false)
+        => GetColor(keyName, category, baseMouseIntervalColor, baseKeyIntervalColor, unknownKeyColor, highlighted);
+
+    public Color GetPointColor(string keyName, string category, bool highlighted = false)
+        => GetColor(keyName, category, baseMousePointColor, baseKeyPointColor, unknownKeyColor, highlighted);
+
+    Color GetColor(string keyName, string category, Color mouseColor, Color keyColor, Color unknownColor, bool highlighted = false)
     {
-        if(highlighted) return GetHighlightedColor(GetPanelColor(keyName, false));
-        if(Enum.TryParse<KeyboardKeys>(keyName, out _)) return ColorWithBias(keyName, baseKeyPanelColor);
-        else if(Enum.TryParse<MouseButton>(keyName, out _)) return ColorWithBias(keyName, baseMousePanelColor);
-        else return unknownKeyColor;
+        if(highlighted) return GetHighlightedColor(GetColor(keyName, category, mouseColor, keyColor, unknownColor, false));
+        if(category.ToLower() == "mouse") return ColorWithBias(keyName, mouseColor);
+        if(category.ToLower() == "key") return ColorWithBias(keyName, keyColor);
+        return unknownColor;
     }
 
-    public Color GetLineColor(string keyName, bool highlighted = false)
-    {
-        if(highlighted) return GetHighlightedColor(GetLineColor(keyName, false));
-        if(Enum.TryParse<KeyboardKeys>(keyName, out _)) return ColorWithBias(keyName, baseKeyLineColor);
-        else if(Enum.TryParse<MouseButton>(keyName, out _)) return ColorWithBias(keyName, baseMouseLineColor);
-        else return unknownKeyColor;
-    }
-
-    public Color GetIntervalColor(string keyName, bool highlighted = false)
-    {
-        if(highlighted) return GetHighlightedColor(GetIntervalColor(keyName, false));
-        if(Enum.TryParse<KeyboardKeys>(keyName, out _)) return ColorWithBias(keyName, baseKeyIntervalColor);
-        else if(Enum.TryParse<MouseButton>(keyName, out _)) return ColorWithBias(keyName, baseKMouseIntervalColor);
-        else return unknownKeyColor;
-    }
-
-    public Color GetPointColor(string keyName, bool highlighted = false)
-    {
-        if(highlighted) return GetHighlightedColor(GetPointColor(keyName, false));
-        if(Enum.TryParse<KeyboardKeys>(keyName, out _)) return ColorWithBias(keyName, baseKeyPointColor);
-        else if(Enum.TryParse<MouseButton>(keyName, out _)) return ColorWithBias(keyName, baseMousePointColor);
-        else return unknownKeyColor;
-    }
 
     Color GetHighlightedColor(Color x)
     {

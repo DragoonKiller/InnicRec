@@ -2,4 +2,4 @@
 #include <string>
 
 
-std::string VkToString(int vk);
+std::pair<std::string, std::string> VkToString(int vk);

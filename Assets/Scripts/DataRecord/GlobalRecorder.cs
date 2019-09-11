@@ -33,6 +33,7 @@ public class GlobalRecorder : MonoBehaviour
     {
 #pragma warning disable CS0649
         public string key;
+        public string category;
         public Record.RecordEvent.Type type;
         public long time;
         public float x;
@@ -113,7 +114,7 @@ public class GlobalRecorder : MonoBehaviour
             var time = startTime + new TimeSpan(input.time) - beginTime + offsetTime;
             if(record != null)
             {
-                record.Add(input.key, input.type, time, input.x, input.y, input.z, input.w);
+                record.Add(input.key, input.category, input.type, time, input.x, input.y, input.z, input.w);
             }
         }
     }

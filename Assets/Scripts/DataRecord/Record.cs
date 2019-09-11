@@ -23,6 +23,7 @@ public sealed class Record
         }
 
         public string key;
+        public string category;
         public TimeSpan time;
         public Type type;
         public float x;
@@ -57,10 +58,16 @@ public sealed class Record
     /// </summary>
     [NonSerialized] public TimeSpan totalTime;
 
-    public void Add(string key, RecordEvent.Type type, TimeSpan time, float x, float y, float z, float w)
+    /// <summary>
+    /// 记录名字到类别的映射.
+    /// </summary>
+    [NonSerialized] public Dictionary<string, string> nameToCategory = new Dictionary<string, string>();
+
+    public void Add(string key, string category, RecordEvent.Type type, TimeSpan time, float x, float y, float z, float w)
     {
         var e = new RecordEvent() {
             key = key,
+            category = category,
             time = time,
             type = type,
             x = x, y = y, z = z, w = w
@@ -82,6 +89,13 @@ public sealed class Record
             e.pairing = g;
             waitForClose.Remove(e.key);
         }
+    }
+
+    public string NameToCategory(string keyName)
+    {
+        if(nameToCategory.TryGetValue(keyName, out var val)) return val;
+        if(events.GetOrDefault(keyName).Count == 0) return "";
+        return nameToCategory[keyName] = events.GetOrDefault(keyName)[0].category;
     }
 
     // ================================================================================================================
@@ -132,6 +146,7 @@ public sealed class Record
     {
         public int id;
         public string key;
+        public string category;
         public long time;
         public RecordEvent.Type type;
         public float x;
@@ -141,16 +156,17 @@ public sealed class Record
         public int pairing;
     }
 
-    class SerializedRecord
+    struct SerializedRecord
     {
         public long totalTime;
-        public List<SerializedRecordEvent> events = new List<SerializedRecordEvent>();
+        public List<SerializedRecordEvent> events;
     }
 
     public string Serialize()
     {
         var serialized = new SerializedRecord {
-            totalTime = totalTime.Ticks
+            totalTime = totalTime.Ticks,
+            events = new List<SerializedRecordEvent>()
         };
 
         var e2id = new Dictionary<RecordEvent, int>();
@@ -163,13 +179,14 @@ public sealed class Record
             serialized.events.Add(new SerializedRecordEvent() {
                 id = e2id[e],
                 key = e.key,
+                category = e.category,
                 time = e.time.Ticks,
                 type = e.type,
                 x = e.x,
                 y = e.y,
                 z = e.z,
                 w = e.w,
-                pairing = e2id.GetOrDefault(e.pairing, -1)
+                pairing = e.pairing == null ? - 1 : e2id.GetOrDefault(e.pairing, -1)
             });
         }
 
@@ -187,6 +204,7 @@ public sealed class Record
         {
             var x = new RecordEvent() {
                 key = i.key,
+                category = i.category,
                 time = new TimeSpan(i.time),
                 type = i.type,
                 x = i.x, y = i.y, z = i.z, w = i.w,

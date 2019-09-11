@@ -148,15 +148,15 @@ public class RecordsControl : MonoBehaviour
         x.record = Record.Deserialize(System.IO.File.ReadAllText(path));
     }
 
-    public void SaveRecord(RecordPanelControl control)
-    {
-
-    }
-
     public RecordPanelControl CreateNew()
     {
         var x = Instantiate(recordSource, recordsRoot);
         records.Add(x);
+
+        // 给 record 设置一个最小的时间范围, 这样就不会因为 timespan = 0 而导致问题.
+        if(x.GetComponent<RecordPanelControl>().record.totalTime == System.TimeSpan.Zero)
+            x.GetComponent<RecordPanelControl>().record.totalTime = System.TimeSpan.FromMilliseconds(1);
+
         return x;
     }
 }

@@ -56,27 +56,27 @@ public class KeyLineControl : MonoBehaviour
 
 
     // 这个 KeyLine 左侧背景图标, 以及中心线的颜色.
-    Color panelColor => ColorManager.inst.GetPanelColor(keyName);
+    Color panelColor => ColorManager.inst.GetPanelColor(keyName, keyCategory);
 
     // 鼠标悬浮在 Key 面板上面时区间的颜色. 会直接按照 alpha 值叠在 panelColor 上.
-    Color panelHoverColor => ColorManager.inst.GetPanelColor(keyName, true);
+    Color panelHoverColor => ColorManager.inst.GetPanelColor(keyName, keyCategory, true);
 
-    Color lineColor => ColorManager.inst.GetLineColor(keyName);
+    Color lineColor => ColorManager.inst.GetLineColor(keyName, keyCategory);
 
     // 鼠标悬浮在 Key 面板上面时线条的颜色. 会直接按照 alpha 值叠在 panelColor 上.
-    Color lineHoverColor => ColorManager.inst.GetLineColor(keyName, true);
+    Color lineHoverColor => ColorManager.inst.GetLineColor(keyName, keyCategory, true);
 
     // 这个 KeyLine 的所有区间的颜色.
-    Color intervalColor => ColorManager.inst.GetIntervalColor(keyName);
+    Color intervalColor => ColorManager.inst.GetIntervalColor(keyName, keyCategory);
 
     // 这个 KeyLine 的所有区间的颜色.
-    Color intervalHoverColor => ColorManager.inst.GetIntervalColor(keyName);
+    Color intervalHoverColor => ColorManager.inst.GetIntervalColor(keyName, keyCategory);
 
     // 这个 KeyLine 的所有单点的颜色.
-    Color pointColor => ColorManager.inst.GetPointColor(keyName, true);
+    Color pointColor => ColorManager.inst.GetPointColor(keyName, keyCategory, true);
 
     // 这个 KeyLine 的所有单点的颜色.
-    Color pointHoverColor => ColorManager.inst.GetPointColor(keyName, true);
+    Color pointHoverColor => ColorManager.inst.GetPointColor(keyName, keyCategory, true);
 
 
     public string keyName
@@ -84,6 +84,8 @@ public class KeyLineControl : MonoBehaviour
         get => text.text;
         set => text.text = value;
     }
+
+    public string keyCategory = "Unknown";
 
     ObjectPool intervalPool => Env.inst?.intervalPool;
     ObjectPool pointPool => Env.inst?.pointPool;
@@ -144,7 +146,7 @@ public class KeyLineControl : MonoBehaviour
     {
         // 同步池子对象.
         intervalPool.Sync(intervalControls, intervals.Count);
-        
+
         // 设置区间位置.
         for(int i = 0; i < intervals.Count; i++)
         {
@@ -160,7 +162,7 @@ public class KeyLineControl : MonoBehaviour
     void UpdateSingles()
     {
         // 同步池子对象.
-        pointPool.Sync(pointControls, points.Count); 
+        pointPool.Sync(pointControls, points.Count);
 
         // 设置位置.
         for(int i = 0; i < points.Count; i++)
