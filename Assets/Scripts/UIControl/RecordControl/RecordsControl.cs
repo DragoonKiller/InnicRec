@@ -40,6 +40,7 @@ public class RecordsControl : MonoBehaviour
     void Update()
     {
         StandarizeViewport();
+        UpdateSelection();
         UpdateViewport();
         UpdateRecordPanelHeight();
         UpdateRecordPanelPosition();
@@ -54,6 +55,17 @@ public class RecordsControl : MonoBehaviour
             viewport.beginPoint = 0;
             viewport.endPoint = 1;
         }
+    }
+
+    void UpdateSelection()
+    {
+        // 按下 D 来选择或取消选择当前鼠标指向的东西.
+        if(Input.GetKeyDown(KeyCode.D))
+        {
+            var rec = GetPointingRecord();
+            if(rec != null) rec.selected = !rec.selected;
+        }
+
     }
 
     void UpdateViewport()
@@ -158,5 +170,24 @@ public class RecordsControl : MonoBehaviour
             x.GetComponent<RecordPanelControl>().record.totalTime = System.TimeSpan.FromMilliseconds(0.5);
 
         return x;
+    }
+
+    /// <summary>
+    /// 获取当前光标指向的记录面板. 如果没有, 返回 null.
+    /// </summary>
+    RecordPanelControl GetPointingRecord()
+    {
+        foreach(var rec in records)
+        {
+            var localRect = rec.rect.rect;
+            var screenRect = new Rect(
+                localRect.x + rec.rect.position.x,
+                localRect.y + rec.rect.position.y,
+                localRect.width,
+                localRect.height
+            );
+            if(screenRect.Contains(Input.mousePosition)) return rec;
+        }
+        return null;
     }
 }

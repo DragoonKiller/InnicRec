@@ -71,7 +71,7 @@ public class RecordPanelControl : MonoBehaviour
     [Tooltip("各个记录的按键次数.")]
     public List<int> timeCounts = new List<int>();
 
-    RectTransform rect => this.GetComponent<RectTransform>();
+    public RectTransform rect => this.GetComponent<RectTransform>();
 
     TimeSpan begin => new TimeSpan((long)(record.totalTime.Ticks * (double)viewport.beginPoint));
 
