@@ -16,6 +16,9 @@ public class Env : MonoBehaviour
     [Tooltip("用于每条记录中, 视野条上方的时间戳的对象池.")]
     public ObjectPool recordViewportTimeStampPool;
 
+    [Tooltip("用于每条记录中, 画在 timeline 后面的时间戳的对象池.")]
+    public ObjectPool recordTimelineTimeStampPool;
+
     [Tooltip("区间事件记录的对象池.")]
     public ObjectPool intervalPool;
 

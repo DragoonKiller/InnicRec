@@ -155,7 +155,7 @@ public class RecordsControl : MonoBehaviour
 
         // 给 record 设置一个最小的时间范围, 这样就不会因为 timespan = 0 而导致问题.
         if(x.GetComponent<RecordPanelControl>().record.totalTime == System.TimeSpan.Zero)
-            x.GetComponent<RecordPanelControl>().record.totalTime = System.TimeSpan.FromMilliseconds(1);
+            x.GetComponent<RecordPanelControl>().record.totalTime = System.TimeSpan.FromMilliseconds(0.5);
 
         return x;
     }

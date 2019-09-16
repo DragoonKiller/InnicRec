@@ -31,7 +31,10 @@ public class RecordPanelControl : MonoBehaviour
     [SerializeField] KeyLineControl source = null;
 
     [Tooltip("视野条的时间标尺.")]
-    [SerializeField] ViewportTimelineControl viewportTimeline = null;
+    [SerializeField] ViewportTimeStampControl viewportTimeStamps = null;
+
+    [Tooltip("时间线的时间标尺.")]
+    [SerializeField] TimelineTimeStampControl timelineTimeStamps = null;
 
     [Tooltip("关闭页面的按钮.")]
     [SerializeField] RecordCancelButtonControl cancelButton = null;
@@ -138,6 +141,7 @@ public class RecordPanelControl : MonoBehaviour
     void OnStick()
     {
         updateRecordView = !updateRecordView;
+        timeLen = end - begin;
     }
 
     void OnCancel() => shouldRemove = true;
@@ -293,7 +297,9 @@ public class RecordPanelControl : MonoBehaviour
     {
         if(record.totalTime == TimeSpan.Zero) return;
         // 根据记录的起止时间, 设置时间标尺.
-        viewportTimeline.timeSpan = record.totalTime.TotalMilliseconds;
+        viewportTimeStamps.timeSpan = (float)record.totalTime.TotalMilliseconds;
+        timelineTimeStamps.begin = (float)record.totalTime.TotalMilliseconds * viewport.beginPoint;
+        timelineTimeStamps.end = (float)record.totalTime.TotalMilliseconds * viewport.endPoint;
     }
 
     // 更新按钮图标的状态.

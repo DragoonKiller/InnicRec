@@ -28,7 +28,7 @@ public class TimeStampControl : PooledBehaviour
     {
         if(style == DisplayStyle.MinuteSecondMillisecond)
         {
-            text.text = $"{displayTime.Minutes.ToString("00")}:{displayTime.Seconds.ToString("00")}.{displayTime.Milliseconds.ToString("00")}";
+            text.text = $"{displayTime.Minutes.ToString("00")}:{displayTime.Seconds.ToString("00")}.{(displayTime.Milliseconds / 100).ToString("00")}";
         }
         else if(style == DisplayStyle.HourMinuteSecond)
         {
